@@ -3,12 +3,19 @@ import { getCurrentUrl } from 'preact-router'
 
 import './routedView.css'
 
+// `Link` css must be inline for some reason
+const LinkCSS = {
+  style: {
+    textDecoration: 'none' 
+  }
+}
+
 const Header = () => (
   <div>
-    <Link href='/' style={{ textDecoration: 'none' }}>
+    <Link href='/' {...LinkCSS}>
       <h1>Star Wars Resources</h1>
     </Link>
-    <h3>{getCurrentUrl().slice(1)}</h3>
+    <h2>{getCurrentUrl().slice(1)}</h2>
   </div>
 )
 

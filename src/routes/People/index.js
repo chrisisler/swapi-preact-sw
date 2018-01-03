@@ -8,18 +8,18 @@ import { putInChest, getFromChest } from '../../chest'
 // }
 class WithData extends Component
 {
-  state = {
-    loading: true, // currently fetching/loading?
-    data: null, // data from network (from `fetch`) or from the cache
-    error: null // was there an error during network fetch?
+  constructor() {
+    super(...arguments)
+    this.state = {
+      loading: true, // currently fetching/loading?
+      data: null, // payload from network (meaning `fetch`) or cache
+      error: null // did error occur during network fetch?
+    }
+    this.retrieveData(this.props.endpoint)
   }
 
   componentWillReceiveProps({ endpoint }) {
     this.retrieveData(endpoint)
-  }
-
-  componentWillMount() {
-    this.retrieveData(this.props.endpoint)
   }
 
   /**
@@ -49,7 +49,7 @@ class WithData extends Component
   render = (props, state) => props.propRender(state)
 }
 
-const LoadingView = () => <div>Loading...</div>
+const LoadingView = () => (<div>Loading...</div>)
 
 const ErrorView = error => (
   <div>
@@ -58,23 +58,20 @@ const ErrorView = error => (
 )
 
 // TODO use flexbox 2-column view
-// TODO fix ul and li css - see Home route
 //   some of the css should stay (like pad/margin)
 const PeopleViewWithData = ({ data }) => (
-  <div>
-    <ul>
-      {Object.keys(data).map(key => (
-        <li key={key}>
-          <strong>{key}:</strong> {data[key]}
-        </li>
-      ))}
-    </ul>
-  </div>
+  <ul>
+    {Object.keys(data).map(key => (
+      <li key={key}>
+        <strong>{key}:</strong> {data[key]}
+      </li>
+    ))}
+  </ul>
 )
 
 export default class PeopleView extends Component
 {
-  // https://swapi.co/documentation#people
+  /** @see https://swapi.co/documentation#people */
   state = { resourceId: 1 }
 
   increment = () => {
@@ -85,10 +82,10 @@ export default class PeopleView extends Component
     this.setState({ resourceId: this.state.resourceId - 1 })
   }
 
-  // TODO updating state does not cause `WithData` to re-render
+  // TODO debounce inc/dec button clicks
   render = (_, { resourceId }) => (
     <div>
-      <h5>Resource ID: {resourceId}</h5>
+      <h4>Resource ID: {resourceId}</h4>
 
       <button onClick={this.increment}>Increment</button>
       <button onClick={this.decrement}>Decrement</button>
@@ -101,6 +98,6 @@ export default class PeopleView extends Component
           return (<PeopleViewWithData data={data} />)
         }}
       />
-  </div>
+    </div>
   )
 }
