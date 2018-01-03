@@ -4,6 +4,7 @@ import { putInChest, getFromChest } from '../../chest'
 
 // Props {
 //   propRender: (loading: Boolean, data?: Object, error?: Error) => JSX.Element
+//   endpoint: String
 // }
 class WithData extends Component
 {
@@ -13,9 +14,21 @@ class WithData extends Component
     error: null // was there an error during network fetch?
   }
 
-  // retrieving the data could be generic -- from `this.props.retrieve ()`
-  async componentWillMount() {
-    const url = 'https://swapi.co/api/planets/1'
+  componentWillReceiveProps({ endpoint }) {
+    this.retrieveData(endpoint)
+  }
+
+  componentWillMount() {
+    this.retrieveData(this.props.endpoint)
+  }
+
+  /**
+   * Retrieve payload from network (`fetch`) or from cache (chest).
+   * Retrieving the data could be generic, like from `props.retrieve ()`.
+   */
+  async retrieveData(endpoint) {
+    const SWAPI_BASE_URL = 'https://swapi.co/api/' 
+    const url = SWAPI_BASE_URL + endpoint
     let data = getFromChest(url)
 
     if (data) {
@@ -36,11 +49,7 @@ class WithData extends Component
   render = (props, state) => props.propRender(state)
 }
 
-const LoadingView = () => (
-  <div>
-    Loading
-  </div>
-)
+const LoadingView = () => <div>Loading...</div>
 
 const ErrorView = error => (
   <div>
@@ -48,18 +57,50 @@ const ErrorView = error => (
   </div>
 )
 
+// TODO use flexbox 2-column view
+// TODO fix ul and li css - see Home route
+//   some of the css should stay (like pad/margin)
 const PeopleViewWithData = ({ data }) => (
   <div>
-    <pre>{JSON.stringify(data)}</pre>
+    <ul>
+      {Object.keys(data).map(key => (
+        <li key={key}>
+          <strong>{key}:</strong> {data[key]}
+        </li>
+      ))}
+    </ul>
   </div>
 )
 
-export default function PeopleView () {
-  return (
-    <WithData propRender={({ loading, error, data }) => {
-      if (loading) return <LoadingView />
-      else if (error) return <ErrorView error={error} />
-      return <PeopleViewWithData data={data} />
-    }} />
+export default class PeopleView extends Component
+{
+  // https://swapi.co/documentation#people
+  state = { resourceId: 1 }
+
+  increment = () => {
+    this.setState({ resourceId: this.state.resourceId + 1 })
+  }
+
+  decrement = () => {
+    this.setState({ resourceId: this.state.resourceId - 1 })
+  }
+
+  // TODO updating state does not cause `WithData` to re-render
+  render = (_, { resourceId }) => (
+    <div>
+      <h5>Resource ID: {resourceId}</h5>
+
+      <button onClick={this.increment}>Increment</button>
+      <button onClick={this.decrement}>Decrement</button>
+
+      <WithData
+        endpoint={`people/${resourceId}`}
+        propRender={({ loading, error, data }) => {
+          if (loading) return (<LoadingView />)
+          else if (error) return (<ErrorView error={error} />)
+          return (<PeopleViewWithData data={data} />)
+        }}
+      />
+  </div>
   )
 }

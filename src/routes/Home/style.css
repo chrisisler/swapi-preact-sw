@@ -1,19 +1,6 @@
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  font-size: 18px;
-  clear: both;
-  text-align: center;
-  padding: 16px 24px;
-  text-transform: none;
-  cursor: pointer;
-}
-
 li:hover {
+  /* star wars golden color */
   color: #FFE300;
   text-decoration: underline;
+  cursor: pointer;
 }
