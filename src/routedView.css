@@ -1,0 +1,17 @@
+#app {
+  height: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.view {
+  margin-bottom: 2rem;
+
+  /* space for header */
+  margin-top: 48px;
+}
+
+h1 {
+  color: #FFE300;
+}
