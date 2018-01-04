@@ -1,0 +1,45 @@
+.btn {
+  font-size: inherit;
+  color: inherit;
+  background-color: #333;
+  padding: 8px 24px;
+  margin: 8px;
+  border: none;
+  border-radius: 2px;
+}
+.btn:hover {
+  background-color: #444;
+  cursor: pointer;
+}
+
+.subtitle {
+  color: #888;
+  font-weight: 400;
+}
+
+.list {
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.row:nth-child(odd) {
+  background-color: #1f1f1f;
+}
+
+.row {
+  display: flex;
+  text-align: center;
+  user-select: none;
+}
+
+.data {
+  padding: 8px;
+  margin: 0;
+  display: inline;
+  width: 50%;
+
+  /* https://css-tricks.com/almanac/properties/t/text-overflow */
+  overflow: hidden;
+  whiteSpace: nowrap;
+  textOverflow: ellipsis;
+}

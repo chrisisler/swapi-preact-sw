@@ -1,7 +1,7 @@
-import './style.css'
+import css from './style.css'
 import { Link } from 'preact-router/match'
 
-const resources = [
+const RESOURCES = [
   'people',
   'films',
   'starships',
@@ -15,19 +15,18 @@ const resourceCSS = {
   textDecoration: 'none'
 }
 
-const Home = () => (
-  <div>
-    <h3>Explore the Star Wars Universe.</h3>
-    <ul>
-      {resources.map(resource => (
-        <li key={resource}>
-          <Link href={`/${resource}`} style={resourceCSS}>
-            {resource}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-)
-
-export default Home
+export default function Home () {
+  const resourceItems = RESOURCES.map(resource => (
+    <li key={resource} class={css.resource}>
+      <Link href={`/${resource}`} style={resourceCSS}>
+        {resource}
+      </Link>
+    </li>
+  ))
+  return (
+    <div>
+      <h3>Explore the Star Wars Universe.</h3>
+      <ul>{resourceItems}</ul>
+    </div>
+  )
+}

@@ -1,94 +1,73 @@
-// import './style'
 import { Component } from 'preact'
-import { putInChest, getFromChest } from '../../chest'
 
-// Props {
-//   propRender: (loading: Boolean, data?: Object, error?: Error) => JSX.Element
-//   endpoint: String
-// }
-class WithData extends Component
-{
-  constructor() {
-    super(...arguments)
-    this.state = {
-      loading: true, // currently fetching/loading?
-      data: null, // payload from network (meaning `fetch`) or cache
-      error: null // did error occur during network fetch?
-    }
-    this.retrieveData(this.props.endpoint)
-  }
-
-  componentWillReceiveProps({ endpoint }) {
-    this.retrieveData(endpoint)
-  }
-
-  /**
-   * Retrieve payload from network (`fetch`) or from cache (chest).
-   * Retrieving the data could be generic, like from `props.retrieve ()`.
-   */
-  async retrieveData(endpoint) {
-    const SWAPI_BASE_URL = 'https://swapi.co/api/' 
-    const url = SWAPI_BASE_URL + endpoint
-    let data = getFromChest(url)
-
-    if (data) {
-      this.setState({ loading: false, data })
-    } else {
-      // data not cached, get from network then cache
-      try {
-        data = await (await fetch(url)).json()
-        putInChest(url, data)
-        this.setState({ loading: false, data })
-      } catch (error) {
-        this.setState({ loading: false, error })
-      }
-    }
-  }
-
-  // render what `propRender` function returns when applied to `this.state`
-  render = (props, state) => props.propRender(state)
-}
+import css from './style.css'
+import WithData from '../../components/WithData'
 
 const LoadingView = () => (<div>Loading...</div>)
+const ErrorView = error => (<div>Error</div>)
 
-const ErrorView = error => (
-  <div>
-    Error
-  </div>
-)
+// Capitalizes The First Character Of Each Word
+function capEachFirst (string) {
+  const capFirst = str => str[0].toUpperCase() + str.slice(1)
+  return string.includes(' ')
+    ? string.split(' ').map(capFirst).join(' ')
+    : capFirst(string)
+}
 
-// TODO use flexbox 2-column view
-//   some of the css should stay (like pad/margin)
-const PeopleViewWithData = ({ data }) => (
-  <ul>
-    {Object.keys(data).map(key => (
-      <li key={key}>
-        <strong>{key}:</strong> {data[key]}
-      </li>
-    ))}
-  </ul>
-)
+function PeopleViewWithData ({ data }) {
+  const rows = Object.keys(data)
+    // .filter(key => !!data[key])
+    .map(key => (
+      <div class={css.row} key={key}>
+        <p class={css.data}>
+          <strong>{capEachFirst(key.replace('_', ' '))}</strong>
+        </p>
+        <p class={css.data}>{data[key]}</p>
+      </div>
+    ))
+  return <div class={css.list}>{rows}</div>
+}
 
+/**
+ * Debounces the given `fn` such that while it continues to be called within
+ * `wait` milliseconds, does not invoke the function until after `wait` ms has
+ * passed and `fn` has not been invoked again.
+ *
+ * @param {Function} fn
+ * @param {Number} wait - Amount of time in milliseconds.
+ * @returns {Function} A debounced version of `fn`.
+ */
+function debounce (fn, wait) {
+  let timeoutId
+  return function debounced (...args) {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(function later () {
+      timeoutId = null
+      fn(...args)
+    }, wait)
+  }
+}
+
+/** @see https://swapi.co/documentation#people */
 export default class PeopleView extends Component
 {
-  /** @see https://swapi.co/documentation#people */
   state = { resourceId: 1 }
+  wait = 250 // debounce time, milliseconds
 
-  increment = () => {
+  increment = debounce(() => {
     this.setState({ resourceId: this.state.resourceId + 1 })
-  }
+  }, this.wait)
 
-  decrement = () => {
+  decrement = debounce(() => {
     this.setState({ resourceId: this.state.resourceId - 1 })
-  }
+  }, this.wait)
 
-  // TODO debounce inc/dec button clicks
   render = (_, { resourceId }) => (
     <div>
-      <h4>Resource ID: {resourceId}</h4>
+      <h3 class={css.subtitle}>Resource ID: {resourceId}</h3>
 
-      <button onClick={this.increment}>Increment</button>
-      <button onClick={this.decrement}>Decrement</button>
+      <button class={css.btn} onClick={this.increment}>Increment</button>
+      <button class={css.btn} onClick={this.decrement}>Decrement</button>
 
       <WithData
         endpoint={`people/${resourceId}`}

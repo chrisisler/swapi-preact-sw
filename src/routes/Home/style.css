@@ -1,4 +1,4 @@
-li:hover {
+.resource:hover {
   /* star wars golden color */
   color: #FFE300;
   text-decoration: underline;

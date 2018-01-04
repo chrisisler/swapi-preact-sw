@@ -4,11 +4,10 @@ import { getCurrentUrl } from 'preact-router'
 import './routedView.css'
 
 // `Link` css must be inline for some reason
-const LinkCSS = {
-  style: {
-    textDecoration: 'none' 
-  }
-}
+const LinkCSS = { style: {
+  textDecoration: 'none',
+  color: '#FFE300'
+}}
 
 const Header = () => (
   <div>
@@ -23,9 +22,6 @@ const Header = () => (
 export const RoutedView = ({ View, ...props }) => (
   <main id='app'>
     <Header />
-
-    <div class='view'>
-      <View {...props} />
-    </div>
+    <View {...props} />
   </main>
 )
