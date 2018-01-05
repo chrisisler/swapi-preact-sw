@@ -4,6 +4,13 @@
 
 html {
   overflow-y: scroll;
+
+  /* bg fallback */
+  background-color: #222;
+  /* bg image */
+  background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url(./assets/trooper.jpg);
+  background-position: center top;
+  background-size: cover;
 }
 
 html, body {
@@ -12,7 +19,6 @@ html, body {
   padding: 0;
   margin: 0;
   line-height: 1.3;
-  background-color: #222;
   font-family: 'Helvetica Neue', arial, sans-serif;
   font-weight: 400;
   font-size: 16px;

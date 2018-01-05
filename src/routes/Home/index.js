@@ -16,7 +16,7 @@ const resourceCSS = {
 }
 
 export default function Home () {
-  const resourceItems = RESOURCES.map(resource => (
+  const resourceLinks = RESOURCES.map(resource => (
     <li key={resource} class={css.resource}>
       <Link href={`/${resource}`} style={resourceCSS}>
         {resource}
@@ -25,8 +25,8 @@ export default function Home () {
   ))
   return (
     <div>
-      <h3>Explore the Star Wars Universe.</h3>
-      <ul>{resourceItems}</ul>
+      <h3 class={css.subtitle}>Explore the Star Wars Universe.</h3>
+      <ul>{resourceLinks}</ul>
     </div>
   )
 }

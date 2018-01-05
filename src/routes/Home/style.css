@@ -1,6 +1,18 @@
+.resource {
+  font-weight: 300;
+  padding: 24px 0;
+  font-size: 18px;
+  margin: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 .resource:hover {
   /* star wars golden color */
   color: #FFE300;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.subtitle {
+  font: serif;
 }

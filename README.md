@@ -4,7 +4,12 @@ Star Wars Preact Service Workers Web App
 
 ## todo
 
-- star wars site background
-- search bar (w/ api) on people view
+- chest -> `localStorage`
 - service worker script
 - format fetched data values on people view
+- remaining resources
+  - films
+  - starships
+  - vehicles
+  - species
+  - planets
