@@ -1,5 +1,6 @@
 import { Component } from 'preact'
 import { putInChest, getFromChest } from '../chest'
+import { SWAPI_BASE_URL } from '../shared'
 
 // Props {
 //   propRender: (loading: Boolean, data?: Object, error?: Error) => JSX.Element
@@ -10,7 +11,7 @@ export default class WithData extends Component
   constructor() {
     super(...arguments)
     this.state = {
-      loading: true, // currently fetching/loading?
+      loading: true, // currently fetching/requesting?
       data: null, // payload from network (meaning `fetch`) or cache
       error: null // did error occur during network fetch?
     }
@@ -26,8 +27,7 @@ export default class WithData extends Component
    * Retrieving the data could be generic, like from `props.retrieve ()`.
    */
   async retrieveData(endpoint) {
-    const SWAPI_BASE_URL = 'https://swapi.co/api/' 
-    const url = SWAPI_BASE_URL + endpoint
+    const url = SWAPI_BASE_URL + endpoint.toLowerCase()
     let data = getFromChest(url)
 
     if (data) {
