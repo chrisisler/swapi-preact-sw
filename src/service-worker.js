@@ -6,88 +6,71 @@
 
 const CACHE = 'my-cache'
 
-// TODO NODE_ENV stuff
-// const { NODE_ENV } = process.env
-
 self.addEventListener('install', event => {
   // force this service worker to become the active one
   self.skipWaiting()
 
-  // if (NODE_ENV !== 'production') {
-  //   console.log('Installing service worker.')
-  // }
-
-  const cacheStoragePromise = precache()
-
-  // Ask the service worker to keep installing until
-  // the promise resolves.
-  event.waitUntil(cacheStoragePromise)
+  // keep installing until the promise resolves
+  event.waitUntil(precache())
 })
 
+// if no fetch handlers call `event.respondWith`, the request will be handled
+// by the browser as if there were no service worker involvement
+/** @see 'https://developer.mozilla.org/en-US/docs/Web/API/Cache/match' */
 self.addEventListener('fetch', event => {
   console.log('[SW] fetch event callback invoked')
-  // immediately respond with cached data, don't wait for network response
-  // const cachedResponsePromise = fromCache(event.request)
-  // event.respondWith(cachedResponsePromise)
+
+  // respond with data from cache immediately for fast performance
+  event.respondWith(cacheFetch(event.request))
 
   // prevent service worker from being killed until cache is updated
-  // const promise = await networkFetch(event.request)
-  // event.waitUntil(promise)
+  event.waitUntil(networkFetch(event.request))
 })
+
+/**
+ * Wrapper function for `fetch` which caches valid responses for later use.
+ *
+ * @param {Request} request
+ * @returns {Promise<Any>}
+ */
+async function networkFetch(request) {
+  // clone the request, since each fetch consumes the request object
+  const response = await fetch(request.clone())
+
+  // if a valid response, then cache the contents for future usage
+  if (response.ok) {
+    const cache = await caches.open(CACHE)
+
+    // must clone the response because `cache.put` consumes the response
+    cache.put(request, response.clone())
+  }
+
+  return response
+}
+
+/**
+ * @param {Request} request
+ * @returns {Promise<Any>}
+ */
+async function cacheFetch (request) {
+  const cache = await caches.open(CACHE)
+  const cached = await cache.match(request)
+  return cached || null
+}
 
 /**
  * Open (or create) a cache then add a list of assets for offline use.
  *
  * @see 'https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage'
- * @returns {Promise}
+ * @returns {Promise<CacheStorage>}
  */
 async function precache () {
+  console.log('[SW] precaching')
+
   const cache = await caches.open(CACHE)
   const cacheStorage = cache.addAll([
     // this is the only asset for now
     './assets/trooper.jpg',
   ])
   return cacheStorage
-}
-
-// self.addEventListener('activate', event => {
-//   const promise = (async function() {
-//     await clients.claim();
-//   })()
-//   event.waitUntil(promise)
-// })
-
-/**
- * problem!
- * @todo
- */
-async function fromCache (request) {
-  const cache = await caches.open(CACHE)
-  try {
-    const cached = await cache.match(request)
-  } catch (error) {
-    console.log('error is:', error)
-    return cached || Promise.reject('no match')
-  }
-}
-
-/**
- * Fetches the requested resource and opens (or creates) a cache, then stores
- * the fetched data into the cache.
- *
- * @param {String} request - URL to fetch data from.
- * @returns {Promise<Cache>}
- */
-async function networkFetch (request) {
-  // Clone the request, since each fetch consumes the request object.
-  // const clonedRequest = event.request.clone();
-
-  // `fetch` consumes the request object, maybe use `request.clone ()` ?
-  const [ cache, networkResponse ] = await Promise.all([
-    caches.open(CACHE),
-    fetch(request)
-  ])
-  // add the key-value request-response pair into the cache for later accessing
-  const emptyPromise = cache.put(request, networkResponse)
-  return emptyPromise
 }
