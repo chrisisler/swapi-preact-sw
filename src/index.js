@@ -26,7 +26,7 @@ export default () => (
 async function registerServiceWorker() {
   // ignore unsupported browsers
   if ('serviceWorker' in navigator) {
-    console.log('[client] Service worker supported.')
+    // console.log('[client] Service worker supported.')
     try {
       const registration = await navigator.serviceWorker.register('./service-worker.js')
       console.log('[client] Service worker registered:', registration)

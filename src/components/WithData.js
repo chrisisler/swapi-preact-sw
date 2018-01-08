@@ -36,6 +36,11 @@ export default class WithData extends Component
       // data not cached, get from network then cache
       try {
         data = await (await fetch(url)).json()
+
+        // if (NODE_ENV !== 'production') {
+        //   console.log('[client] fetched resource:', url)
+        // }
+
         putInChest(url, data)
         this.setState({ loading: false, data })
       } catch (error) {

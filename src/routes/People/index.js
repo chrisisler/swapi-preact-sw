@@ -8,7 +8,9 @@ import css from './style.css'
 import WithData from '../../components/WithData'
 
 const LoadingView = () => (<div>Loading...</div>)
-const ErrorView = ({ error }) => (<div>Error</div>) // TODO
+
+// TODO fetching when offline provides an un catchable error from network
+const ErrorView = ({ error }) => (<div>Error: {error}</div>)
 
 export default class People extends Component
 {
