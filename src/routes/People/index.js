@@ -6,6 +6,9 @@ import { Component } from 'preact'
 
 import css from './style.css'
 import WithData from '../../components/WithData'
+import { capEachFirst, debounce } from '../../shared'
+
+const waitTime = 250 // debounce time, milliseconds
 
 const LoadingView = () => (<div>Loading...</div>)
 
@@ -15,31 +18,30 @@ const ErrorView = ({ error }) => (<div>Error: {error}</div>)
 export default class People extends Component
 {
   resourceType = 'people'
-  wait = 250 // debounce time, milliseconds
   state = {
     resourceId: 1,
     searched: false // did the user search for something?
   }
 
-  nextResource = debounce(() => {
+  nextResource = debounce({ leading: true }, waitTime, function () {
     this.setState({ searched: false, resourceId: this.state.resourceId + 1 })
-  }, this.wait)
+  })
 
-  prevResource = debounce(() => {
+  prevResource = debounce({ leading: true }, waitTime, function () {
     this.setState({ searched: false, resourceId: this.state.resourceId - 1 })
-  }, this.wait)
+  })
 
-  onInput = debounce(event => {
+  onInput = debounce({ leading: false }, waitTime * 2, function (event) {
     const query = event.target.value
 
+    // if user clears the search, then revert to initial state/view
     if (query.length === 0 && event.key === 'Backspace') {
-      // clear the search, reset resourceId to initial
       this.setState({ searched: false, resourceId: 1 })
     } else {
       const resourceId = '?search=' + query
       this.setState({ resourceId, searched: true })
     }
-  }, this.wait * 2)
+  })
 
   render = (_, { resourceId }) => {
     // disable button to prevent 404's from fetching non-existent API resources
@@ -67,6 +69,9 @@ export default class People extends Component
     const searched = (!!data.count) && (!!data.results) && (!!this.inputElem.value)
     if (searched) {
       return (<SearchedViewWithData data={data} fetchResource={resourceURL => {
+        // if this turns out NOT to be a reliable way to retrieve the resourceId,
+        // then it may be a good idea to change the WithData component to just
+        // provide an absolute URL as a prop instead of just part of a URL
         const urlParts = resourceURL.split('/')
         const resourceId = urlParts[urlParts.length - 2]
         // updating state gives new props to `WithData` which fetches the request
@@ -105,32 +110,3 @@ function PeopleViewWithData ({ data }) {
     ))
   return <div class={css.list}>{rows}</div>
 }
-
-/**
- * Debounces the given `fn` such that while it continues to be called within
- * `wait` milliseconds, does not invoke the function until after `wait` ms has
- * passed and `fn` has not been invoked again.
- *
- * @param {Function} fn
- * @param {Number} wait - Amount of time in milliseconds.
- * @returns {Function} A debounced version of `fn`.
- */
-function debounce (fn, wait) {
-  let timeoutId
-  return function debounced (...args) {
-    clearTimeout(timeoutId)
-    timeoutId = setTimeout(function later () {
-      timeoutId = null
-      fn(...args)
-    }, wait)
-  }
-}
-
-// Capitalizes The First Character Of Each Word
-function capEachFirst (string) {
-  const capFirst = str => str[0].toUpperCase() + str.slice(1)
-  return string.includes(' ')
-    ? string.split(' ').map(capFirst).join(' ')
-    : capFirst(string)
-}
-

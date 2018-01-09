@@ -5,6 +5,7 @@ import { RoutedView } from './routedView'
 
 import Home from './routes/Home/index'
 import People from './routes/People/index'
+import Films from './routes/Films/index'
 
 // people [wip]
 // films
@@ -17,6 +18,7 @@ export default () => (
   <Router>
     <RoutedView path='/' View={Home} default />
     <RoutedView path='/people' View={People} />
+    <RoutedView path='/films' View={Films} />
   </Router>
 )
 
