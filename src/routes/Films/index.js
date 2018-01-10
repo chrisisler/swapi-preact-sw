@@ -33,7 +33,7 @@ function searchRender ({ data, fetchResource }) {
   const rows = data.results.map(({ title, url }, index) => (
     <div class={css.row} key={title} onClick={() => { fetchResource(url) }}>
       <p class={css.data}>{index + 1}</p>
-      <p class={css.data + ' ' + css.clickable}>{title}</p>
+      <p class={css.data + ' ' + css.clickable}><strong>{title}</strong></p>
     </div>
   ))
   return <div class={css.list}>{rows}</div>
