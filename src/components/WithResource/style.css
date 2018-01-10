@@ -22,28 +22,28 @@
   background-color: #333;
 }
 
-/* .search { */
-/*   display: block; */
-/*   margin: 16px auto; */
-/*   font: inherit; */
-/*   color: inherit; */
-/*   outline: none; */
-/*   border: none; */
-/*   background-color: inherit; */
-/*   border-bottom: 2px solid #333; */
-/*   padding: 8px 4px; */
-/* } */
-/* .search:hover { */
-/*   border-bottom-color: #444; */
-/* } */
-/* .search:focus { */
-/*   border-bottom-color: #555; */
-/* } */
-
 .separator {
   height: 1px;
   padding: 0;
   margin-top: 24px;
   margin-bottom: 32px;
   border-bottom: 1px solid #2b2b2b; /* yorha */
+}
+
+.search {
+  display: block;
+  margin: 16px auto;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  border: none;
+  background-color: inherit;
+  border-bottom: 2px solid #333;
+  padding: 8px 4px;
+}
+.search:hover {
+  border-bottom-color: #444;
+}
+.search:focus {
+  border-bottom-color: #555;
 }

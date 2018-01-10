@@ -23,15 +23,15 @@ export default class People extends Component
     searched: false // did the user search for something?
   }
 
-  nextResource = debounce({ leading: true }, waitTime, function () {
+  nextResource = debounce({ leading: true }, waitTime, () => {
     this.setState({ searched: false, resourceId: this.state.resourceId + 1 })
   })
 
-  prevResource = debounce({ leading: true }, waitTime, function () {
+  prevResource = debounce({ leading: true }, waitTime, () => {
     this.setState({ searched: false, resourceId: this.state.resourceId - 1 })
   })
 
-  onInput = debounce({ leading: false }, waitTime * 2, function (event) {
+  onInput = debounce({ leading: false }, waitTime * 2, (event) => {
     const query = event.target.value
 
     // if user clears the search, then revert to initial state/view

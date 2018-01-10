@@ -1,16 +1,7 @@
-import { route } from 'preact'
-
 import css from './style.css'
+import { clickable } from '../shared.css'
 import { Link } from 'preact-router/match'
-
-const RESOURCES = [
-  'people',
-  'films',
-  'starships',
-  'vehicles',
-  'species',
-  'planets'
-]
+import { RESOURCE_TYPES } from '../../shared'
 
 const resourceCSS = {
   color: 'inherit',
@@ -18,17 +9,13 @@ const resourceCSS = {
 }
 
 export default function Home () {
-  const resourceLinks = RESOURCES.map(resource => {
-    const url = '/' + resource
-    console.log('url is:', url)
-    return (
-      <li key={resource} class={css.resource} onClick={() => { route(url, true) }}>
-        <Link href={url} style={resourceCSS}>
-          {resource}
-        </Link>
-      </li>
-    )
-  })
+  const resourceLinks = Object.keys(RESOURCE_TYPES).map(resourceType => (
+    <li key={resourceType} class={css.resource + ' ' + clickable}>
+      <Link href={`/${resourceType}`} style={resourceCSS}>
+        {resourceType}
+      </Link>
+    </li>
+  ))
   return (
     <div>
       <h3 class={css.subtitle}>Explore the Star Wars Universe.</h3>

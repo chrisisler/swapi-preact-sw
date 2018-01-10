@@ -1,5 +1,14 @@
 export const SWAPI_BASE_URL = 'https://swapi.co/api/' 
 
+export const RESOURCE_TYPES = {
+  people: 'people',
+  films: 'films',
+  starships: 'starships',
+  vehicles: 'vehicles',
+  species: 'species',
+  planets: 'planets'
+}
+
 /**
  * Capitalizes The First Character Of Each Word
  *
@@ -16,7 +25,8 @@ export function capEachFirst (string) {
 /**
  * Creates a debounced function that invokes `fn` either after `wait`
  * milliseconds have passed or invokes `fn` immediately then guards further
- * calls until after `wait` ms have passed.
+ * calls until after `wait` ms have passed. (If `leading` is false, then
+ * the trailing edge is implied to be true.)
  *
  * @see 'https://davidwalsh.name/function-debounce'
  * @see 'https://css-tricks.com/debouncing-throttling-explained-examples'
