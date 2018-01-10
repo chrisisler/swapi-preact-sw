@@ -1,3 +1,5 @@
+import { route } from 'preact'
+
 import css from './style.css'
 import { Link } from 'preact-router/match'
 
@@ -16,13 +18,17 @@ const resourceCSS = {
 }
 
 export default function Home () {
-  const resourceLinks = RESOURCES.map(resource => (
-    <li key={resource} class={css.resource}>
-      <Link href={`/${resource}`} style={resourceCSS}>
-        {resource}
-      </Link>
-    </li>
-  ))
+  const resourceLinks = RESOURCES.map(resource => {
+    const url = '/' + resource
+    console.log('url is:', url)
+    return (
+      <li key={resource} class={css.resource} onClick={() => { route(url, true) }}>
+        <Link href={url} style={resourceCSS}>
+          {resource}
+        </Link>
+      </li>
+    )
+  })
   return (
     <div>
       <h3 class={css.subtitle}>Explore the Star Wars Universe.</h3>
