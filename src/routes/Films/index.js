@@ -12,7 +12,7 @@ export default function Films () {
   )
 }
 
-function listRender ({ data, resourceId }) {
+function listRender ({ data }) {
   const rows = Object.keys(data).map(key => {
     const keyStr = capEachFirst(key.replace('_', ' '))
     return (

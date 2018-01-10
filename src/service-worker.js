@@ -33,7 +33,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   // I honestly have no idea how this works or why, but it does
   const promise = Promise.resolve(async () => {
-    await clients.claim()
+    await clients.claim() // eslint-disable-line no-undef
     await purgeCaches()
   })
   event.waitUntil(promise)

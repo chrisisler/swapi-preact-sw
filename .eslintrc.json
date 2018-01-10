@@ -33,6 +33,9 @@
       "warn",
       2
     ],
+    "no-console": [
+      "warn"
+    ],
     "linebreak-style": [
       "error",
       "unix"

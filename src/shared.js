@@ -37,21 +37,21 @@ export function capEachFirst (string) {
  * @returns {Function} -  A leading or trailing debounced version of `fn`.
  */
 export function debounce ({ leading = false }, wait, fn) {
-	let timerId
+  let timerId
 
-	return function debounced (...args) {
-		let callNow = leading && !timerId
+  return function debounced (...args) {
+    let callNow = leading && !timerId
 
-		clearTimeout(timerId)
+    clearTimeout(timerId)
     timerId = setTimeout(function onTimeout () {
-			timerId = null
+      timerId = null
       if (!leading) {
         fn(...args)
       }
-		}, wait)
+    }, wait)
 
     if (callNow) {
       fn(...args)
     }
-	}
+  }
 }
