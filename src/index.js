@@ -7,13 +7,6 @@ import Home from './routes/Home/index'
 import People from './routes/People/index'
 import Films from './routes/Films/index'
 
-// people [wip]
-// films
-// starships
-// vehicles
-// species
-// planets
-
 export default () => (
   <Router>
     <RoutedView path='/' View={Home} default />
@@ -28,10 +21,9 @@ export default () => (
 async function registerServiceWorker() {
   // ignore unsupported browsers
   if ('serviceWorker' in navigator) {
-    // console.log('[client] Service worker supported.')
     try {
-      const registration = await navigator.serviceWorker.register('./service-worker.js')
-      console.log('[client] Service worker registered:', registration)
+      console.log('[client] Service worker registered.')
+      navigator.serviceWorker.register('./service-worker.js')
     } catch (error) {
       console.error('[client] Service worker registration error:', error)
     }
