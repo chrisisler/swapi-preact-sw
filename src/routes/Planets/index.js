@@ -1,18 +1,20 @@
+/** @see https://swapi.co/documentation#planets */
+
 import css from '../shared.css'
 import WithResource from '../../components/WithResource/index'
 import { RESOURCE_TYPES, capEachFirst } from '../../shared'
 
-export default function Films () {
+export default function Planets () {
   return (
     <WithResource
-      resourceType={RESOURCE_TYPES.films}
-      listRender={FilmsView}
-      searchRender={SearchedFilmsView}
+      resourceType={RESOURCE_TYPES.planets}
+      listRender={PlanetsView}
+      searchRender={SearchedPlanetsView}
     />
   )
 }
 
-function FilmsView ({ data }) {
+function PlanetsView ({ data }) {
   const rows = Object.keys(data).map(key => {
     const keyStr = capEachFirst(key.replace('_', ' '))
     return (
@@ -25,16 +27,18 @@ function FilmsView ({ data }) {
   return <div class={css.list}>{rows}</div>
 }
 
-function SearchedFilmsView ({ data, fetchResource }) {
-  if (data.results.length === 0) {
-    return <div>No results!</div>
+function SearchedPlanetsView ({ data, fetchResource }) {
+  const planets = data.results
+  if (planets.length === 0) {
+    return <div>No resulting planets for that search!</div>
   }
 
-  const rows = data.results.map(({ title, url }, index) => (
-    <div class={css.row} key={title} onClick={() => { fetchResource(url) }}>
+  const rows = planets.map(({ name, url }, index) => (
+    <div class={css.row} key={name} onClick={() => { fetchResource(url) }}>
       <p class={css.data}>{index + 1}</p>
-      <p class={css.data + ' ' + css.clickable}><strong>{title}</strong></p>
+      <p class={css.data + ' ' + css.clickable}><strong>{name}</strong></p>
     </div>
   ))
+
   return <div class={css.list}>{rows}</div>
 }

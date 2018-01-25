@@ -7,7 +7,7 @@
 const CACHE = 'my-cache'
 
 self.addEventListener('install', event => {
-  // console.log('[SW] install event')
+  console.log('[SW] install event')
 
   // force this service worker to become the active one
   self.skipWaiting()
@@ -28,50 +28,58 @@ self.addEventListener('install', event => {
  * @see 'https://developer.mozilla.org/en-US/docs/Web/API/Cache/match'
  */
 self.addEventListener('fetch', event => {
-  event.respondWith((async function () {
-    const cached = await cacheFetch(event.request)
-    if (cached) {
-      // for dev, ignore webpack hmr code server
-      // if (cached.type !== 'basic') {
-      //   console.log('cached is:', cached)
-      // }
-      return cached
+  // console.log('[SW] fetch event')
+
+  const promise = (async function () {
+    try {
+      const cached = await cacheFetch(event.request)
+      if (cached) {
+        // for dev, ignore webpack hmr code server
+        // if (cached.type !== 'basic') {
+        //   console.log('[SW] cached is:', cached)
+        // }
+        return cached
+      }
+      return await networkFetch(event.request)
+    } catch (error) {
+      console.error(`[SW] Failed to fetch ${event.request.url}\n\n${error}`)
+      throw error
     }
-    // console.log('not cached, fetching:', event.request.url)
-    return await networkFetch(event.request)
-  })())
+  })()
+
+  event.respondWith(promise)
 
   // prevent service worker from being killed until cache gets updated
+  // not sure if needed
   // event.waitUntil(networkFetch(event.request))
 })
 
 /** @see 'github.com/kristoferbaxter/preact-hn/blob/master/src/service-worker.js#L68-L75' */
-// self.addEventListener('activate', event => {
-// console.log('[SW] activate event')
+self.addEventListener('activate', event => {
+  console.log('[SW] activate event')
 
-// I honestly have no idea how this works or why, but it does
-// event.waitUntil((async function () {
-// TODO this does not get logged
-// console.log('foo')
-// await clients.claim() // eslint-disable-line no-undef
-// await purgeCaches()
-// })())
+  // I honestly have no idea how this works or why, but it does
+  const promise = (async function () {
+    await self.clients.claim()
+    await purgeCaches()
+  })()
 
-// event.waitUntil(purgeCaches())
-// })
+  event.waitUntil(promise)
+  event.waitUntil(purgeCaches())
+})
 
-// async function purgeCaches() {
-//   console.log('[SW] purgeCaches()')
+async function purgeCaches() {
+  console.log('[SW] purgeCaches()')
 
-//   const cacheNames = await caches.keys()
+  const cacheNames = await caches.keys()
 
-//   cacheNames.forEach(async cacheName => {
-//     if (cacheName !== CACHE) {
-//       console.log(`[SW] purgeCaches() -> Deleting cache: ${cacheName}`)
-//       await caches.delete(cacheName)
-//     }
-//   })
-// }
+  cacheNames.forEach(async function (cacheName) {
+    if (cacheName !== CACHE) {
+      console.log(`[SW] purgeCaches() -> Deleting cache: ${cacheName}`)
+      await caches.delete(cacheName)
+    }
+  })
+}
 
 /**
  * Wrapper function for `fetch` which caches valid responses for later use.

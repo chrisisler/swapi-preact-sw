@@ -38,7 +38,7 @@ export default class WithData extends Component
         data = await (await fetch(url)).json()
 
         // if (NODE_ENV !== 'production') {
-        //   console.log('[client] fetched resource:', url)
+        //   console.log('[client] fetched resource (not in chest cache):', url)
         // }
 
         putInChest(url, data)

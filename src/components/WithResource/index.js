@@ -13,23 +13,21 @@ const ErrorView = ({ error }) => (<div>Error: {error}</div>)
 const waitTime = 250
 
 // Props {
-//   resourceType: String // @see 'src/shared.js'
+//   resourceType: String // one of the `RESOURCE_TYPES` from `src/shared.js`
 //   listRender: (props: { data: Object, resourceId: Number }) -> JSX.Element
 //   searchRender:
 //     (props: { data: Object, fetchResource: (resourceURL: String) -> Void }) -> JSX.Element
 // }
 export default class WithResource extends Component
 {
-  state = {
-    resourceId: 1, /** @see https://swapi.co */
-  }
+  state = { resourceId: this.props.resourceId || 1 }
 
   prevResource = debounce({ leading: true }, waitTime, () => {
-    this.setState({ resourceId: this.state.resourceId - 1 })
+    this.setState({ resourceId: this.state.resourceId - 1, clickedNext: false })
   })
 
   nextResource = debounce({ leading: true }, waitTime, () => {
-    this.setState({ resourceId: this.state.resourceId + 1 })
+    this.setState({ resourceId: this.state.resourceId + 1, clickedNext: true })
   })
 
   onInput = debounce({ leading: false }, waitTime * 2, (event) => {
@@ -37,7 +35,7 @@ export default class WithResource extends Component
 
     // if user clears the search, then revert to initial state/view
     if (query.length === 0 && event.key === 'Backspace') {
-      this.setState({ resourceId: 1 })
+      this.setState({ resourceId: this.props.resourceId || 1 })
     } else {
       this.setState({ resourceId: '?search=' + query })
     }
@@ -49,15 +47,22 @@ export default class WithResource extends Component
       ? (<button class={css.btn} onClick={this.prevResource}>Previous</button>)
       : (<button class={css.btn + ' ' + css.btnDisabled}>Previous</button>)
 
+    // IDEA: programatically click the prev/next button again if the user
+    // clicking on one of them resulted in an error from the api.
+    // See the `clickedNext` property on `this.state`.
+
     return (
       <div>
+        <h4>Resource ID: {resourceId}</h4>
+
         {previousButton}
         <button class={css.btn} onClick={this.nextResource}>Next</button>
 
         <input
           class={css.search}
           placeholder='Search'
-          onKeyDown={this.onInput} ref={el => { this.inputElem = el }}
+          onKeyDown={this.onInput}
+          ref={el => { this.inputElem = el }}
         />
 
         <div class={css.separator} />
