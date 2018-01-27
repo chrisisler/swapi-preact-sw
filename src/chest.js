@@ -23,19 +23,21 @@ export function getFromChest (key) {
   return chest[key]
 }
 
-const CHEST_KEY = 'CHEST_KEY'
+if (typeof window !== 'undefined') {
+  const CHEST_KEY = 'CHEST_KEY'
 
-// whenever user refreshes page, put cache into localStorage
-window.onbeforeunload = function beforePageRefresh() {
-  window.localStorage.setItem(CHEST_KEY, JSON.stringify(chest))
-}
-
-// after page refresh finishes, retrieve chest data from localStorage
-window.addEventListener('load', function afterPageRefresh() {
-  if (window.localStorage.length > 0) {
-    const stored = window.localStorage.getItem(CHEST_KEY)
-    if (stored) {
-      chest = JSON.parse(stored)
-    }
+  // whenever user refreshes page, put cache into localStorage
+  window.onbeforeunload = function beforePageRefresh() {
+    window.localStorage.setItem(CHEST_KEY, JSON.stringify(chest))
   }
-})
+
+  // after page refresh finishes, retrieve chest data from localStorage
+  window.addEventListener('load', function afterPageRefresh() {
+    if (window.localStorage.length > 0) {
+      const stored = window.localStorage.getItem(CHEST_KEY)
+      if (stored) {
+        chest = JSON.parse(stored)
+      }
+    }
+  })
+}

@@ -13,7 +13,7 @@ self.addEventListener('install', event => {
   self.skipWaiting()
 
   // keep installing until the promise resolves
-  event.waitUntil(precache())
+  // event.waitUntil(precache())
 })
 
 /**
@@ -114,11 +114,11 @@ async function cacheFetch (request) {
 }
 
 // Open (or create) a cache then add a list of assets for offline use.
-async function precache () {
-  const cache = await caches.open(CACHE)
-  // console.log('cache is:', cache)
-  await cache.addAll([
-    // this is the only asset for now
-    './assets/trooper.jpg',
-  ])
-}
+// async function precache () {
+//   const cache = await caches.open(CACHE)
+//   // console.log('cache is:', cache)
+//   await cache.addAll([
+//     // this is the only asset for now
+//     './assets/trooper.jpg',
+//   ])
+// }

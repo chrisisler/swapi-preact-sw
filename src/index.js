@@ -26,7 +26,7 @@ export default () => (
 // developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register
 function registerServiceWorker () {
   // ignoring unsupported browsers
-  if ('serviceWorker' in navigator) {
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
     try {
       console.log('[client] Service worker registered.')
       navigator.serviceWorker.register('./service-worker.js')
