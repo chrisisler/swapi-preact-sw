@@ -8,7 +8,7 @@ html {
   /* bg fallback */
   background-color: #222;
   /* bg image */
-  background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url(./assets/trooper.jpg);
+  background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url(./assets/bg.jpg);
   background-position: center top;
   background-size: cover;
 }

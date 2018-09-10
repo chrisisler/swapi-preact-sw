@@ -9,7 +9,7 @@
   user-select: none;
 }
 .row:nth-child(even) {
-  background-color: #1f1f1f;
+  /* background-color: red; */
 }
 
 .data {
